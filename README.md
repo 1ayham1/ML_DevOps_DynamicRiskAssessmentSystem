@@ -36,3 +36,40 @@ seting up processes and scripts to `re-train`, `re-deploy`, `monitor`, and `repo
 **5. Process Automation**
 
 - Creating a script and cron job that automatically run all previous steps at regular intervals.
+
+## File Structure
+```
+.
+│   apicalls.py         a Python script to call API endpoints
+│   app.py              a Python script that contains API endpoints
+│   config.json         a data file that contains names of files for configuring ML Python scripts
+│   deployment.py       a Python script to deploy a trained ML model       
+│   diagnostics.py      a Python script to measure model and data diagnostics
+│   fullprocess.py      a script to determine whether a model needs to be re-deployed, and to call all other Python scripts when needed
+│   ingestion.py        a Python script to ingest new data
+│   LICENSE
+│   README.md           *this file
+│   reporting.py        a Python script to generate reports about model metrics
+│   requirements.txt    a text file containing current versions of all the modules the scripts use
+│   scoring.py          a Python script to score an ML model
+│   training.py         a Python script to train an ML model
+│   wsgi.py             a Python script to help with API deployment
+│   
+├───ingesteddata        Contain the compiled datasets after ingestion script
+├───models              contain ML models that is created for production.
+├───practicedata        Contains some data for practice
+│       dataset1.csv
+│       dataset2.csv
+│       Icon_
+│       
+├───practicemodels        contain ML models that are created as practice
+├───production_deployment contain your final, deployed models
+├───sourcedata            contains data to be loaded to train your models.
+│       dataset3.csv
+│       dataset4.csv
+│       Icon_
+│       
+└───testdata              contains data for testing the models.
+        Icon_
+        testdata.csv
+```
