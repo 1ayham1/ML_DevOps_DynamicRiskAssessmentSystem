@@ -60,16 +60,13 @@ seting up processes and scripts to `re-train`, `re-deploy`, `monitor`, and `repo
 ├───practicedata        Contains some data for practice
 │       dataset1.csv
 │       dataset2.csv
-│       Icon_
 │       
 ├───practicemodels        contain ML models that are created as practice
 ├───production_deployment contain your final, deployed models
 ├───sourcedata            contains data to be loaded to train your models.
 │       dataset3.csv
 │       dataset4.csv
-│       Icon_
 │       
 └───testdata              contains data for testing the models.
-        Icon_
         testdata.csv
 ```
