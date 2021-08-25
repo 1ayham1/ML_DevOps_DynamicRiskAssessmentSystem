@@ -13,6 +13,9 @@ seting up processes and scripts to `re-train`, `re-deploy`, `monitor`, and `repo
 
 **1. Data Ingestion**
 
+Creating a script that's flexible enough to work with constantly changing sets of input files instead of using a single, static dataset.
+
+In this step, you'll read data files into Python, and write them to an output file that will be your master dataset. You'll also save a record of the files you've read.
 - Automatically checking a database for new data that can be used for model training.
 - Compiling all training data to a training dataset and saving it to persistent storage. 
 - Writing metrics related to the completed data ingestion tasks to persistent storage.
