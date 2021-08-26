@@ -23,12 +23,17 @@ def merge_multiple_dataframe():
                 'number_of_employees','exited']
     
     df_list = pd.DataFrame(columns=col_names)
+    consumed_list = []
+    
     r_path = os.path.join(os.getcwd(),input_folder_path)
+
 
     for roots, dirs, files in os.walk(r_path):
         
         for file in files:
             
+            consumed_list.append(file)
+
             fullpath = os.path.join(roots, file)
 
             df = pd.read_csv(fullpath)
@@ -36,8 +41,16 @@ def merge_multiple_dataframe():
 
     result = df_list.drop_duplicates()
 
-    saved_output = os.path.join(output_folder_path,'result.csv')
-    result.to_csv(saved_output, index=False)
+    data_file = os.path.join(output_folder_path,'finaldata.csv')
+    result.to_csv(data_file, index=False)
+    
+    names_file = os.path.join(output_folder_path,'ingestedfiles.txt')
+    with open(names_file,"w")  as f:
+        for element in consumed_list:
+            f.write(element+ "\n")
+        
+
+
 
 if __name__ == '__main__':
     merge_multiple_dataframe()
