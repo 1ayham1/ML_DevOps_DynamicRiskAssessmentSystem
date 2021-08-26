@@ -16,7 +16,7 @@ test_data_path = os.path.join(config['test_data_path'])
 deploy_folder = os.path.join(config['prod_deployment_path'])
 
 #Function to get model predictions
-def model_predictions():
+def model_predictions(df):
     """
     read the deployed model and a test dataset, calculate predictions
     and returns a list containing all predictions
@@ -24,10 +24,6 @@ def model_predictions():
     model_path = os.path.join(deploy_folder,"trainedmodel.pkl")
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
-
-    #read data
-    file_name = os.path.join(test_data_path,"testdata.csv")
-    df = pd.read_csv(file_name,low_memory=False)
 
     X = df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']].values.reshape(-1, 3)
     y = df['exited'].values.reshape(-1, 1).ravel()
@@ -119,14 +115,20 @@ def outdated_packages_list():
     
     outdated = subprocess.check_output(['pip', 'list','--outdated'])
     
-    outdated_name = os.path.join(dataset_csv_path,"outdated.txt")
+    #outdated_name = os.path.join(dataset_csv_path,"outdated.txt")
     #with open(outdated_name, 'wb') as f:
     #   f.write(outdated)
 
     return outdated
 
 if __name__ == '__main__':
-    predicted = model_predictions()
+
+    #read data
+    file_name = os.path.join(test_data_path,"testdata.csv")
+    df = pd.read_csv(file_name,low_memory=False)
+
+    predicted = model_predictions(df)
+    #print(predicted)
     out_list = dataframe_summary()
     p_missing = missing_data()
     t_inj, t_train = execution_time()
