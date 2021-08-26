@@ -35,7 +35,9 @@ def merge_multiple_dataframe():
             df_list = df_list.append(df)
 
     result = df_list.drop_duplicates()
-    result.to_csv('Z_result.csv', index=False)
+
+    saved_output = os.path.join(output_folder_path,'result.csv')
+    result.to_csv(saved_output, index=False)
 
 if __name__ == '__main__':
     merge_multiple_dataframe()
