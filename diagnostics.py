@@ -126,7 +126,7 @@ def outdated_packages_list():
     return outdated
 
 if __name__ == '__main__':
-    model_predictions()
+    predicted = model_predictions()
     out_list = dataframe_summary()
     p_missing = missing_data()
     t_inj, t_train = execution_time()
