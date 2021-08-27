@@ -2,12 +2,12 @@ from flask import Flask, session, jsonify, request
 import pandas as pd
 import numpy as np
 import pickle
-import create_prediction_model
-import diagnosis 
-import predict_exited_from_saved_model
+
 import json
 import os
 
+from diagnostics import model_predictions,dataframe_summary,execution_time,missing_data,outdated_packages_list
+from scoring import score_model
 
 #Set up variables for use in our script
 app = Flask(__name__)
@@ -21,7 +21,6 @@ model_folder = os.path.join(config['output_model_path'])
 
 prediction_model = None
 
-
 #Prediction Endpoint
 @app.route("/prediction", methods=['POST','OPTIONS'])
 def predict():        
@@ -29,37 +28,59 @@ def predict():
     take a dataset's file location as its input, 
     returns value for prediction outputs
     """
-    filename = request.args.get('file')
-    data = pd.read_csv(filename)
+    #file_location = request.args.get('file_location')
+    #filename = os.path.join(file_location,"testdata.csv")
 
-    model_path = os.path.join(model_folder,"trainedmodel.pkl")
-    with open(model_path, 'rb') as file:
-        model = pickle.load(file)
+    #or pass file name directly using fullpath .../..../x.csv
+    filename = request.args.get('file_location')
+    
+    data_df = pd.read_csv(filename)
+    predicted = model_predictions(data_df)
 
-    prediction= model.predict(data)
+    return str(predicted)
 
-    return str(prediction)
 
 #Scoring Endpoint
 @app.route("/scoring", methods=['GET','OPTIONS'])
-def stats():        
-    #check the score of the deployed model
-    #add return value (a single F1 score number)
-    return None
+def score_stats():        
+    """check the score of the deployed model, returns F1 score"""
+    
+    f1score = score_model()
+    return str(f1score)
+
 
 #Summary Statistics Endpoint
 @app.route("/summarystats", methods=['GET','OPTIONS'])
-def stats():        
-    #check means, medians, and modes for each column
-    #return a list of all calculated summary statistics
-    return None
+def summary_stats():        
+    """
+    check means, medians, and std for each column
+    return a list of all calculated summary statistics
+    """
+    
+    summary_list = dataframe_summary()
+
+    return str(summary_list)
+
 
 #Diagnostics Endpoint
 @app.route("/diagnostics", methods=['GET','OPTIONS'])
-def stats():        
-    #check timing and percent NA values
-    #add return value for all diagnostics
-    return None
+def diag_stats():        
+    """
+    returns execution time (data_ingestion, training)
+    percent NA values
+    and list of outdated_packages
+    """
+    p_missing = missing_data()
+    ingest_time, train_time = execution_time()
+    outdated = outdated_packages_list()
+
+    all_output = "Missing Data:\n" +p_missing +"\nTime:\nIngestion: " + str(ingest_time) + \
+                "\tTrain: "+ str(train_time) + "\nOutdated Packages:\n" + outdated
+
+    return all_output
+    
+
+
 
 if __name__ == "__main__":    
     app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
