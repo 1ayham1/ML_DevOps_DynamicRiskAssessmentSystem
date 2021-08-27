@@ -7,6 +7,7 @@ import json
 import pickle
 import subprocess
 
+
 #Load config.json and get environment variables
 with open('config.json','r') as f:
     config = json.load(f) 
@@ -55,7 +56,7 @@ def dataframe_summary():
     for idx in range(len(group_mean)):
         stat_list.extend([group_mean[idx],group_median[idx],group_std[idx]])
     
-    return stat_list
+    return str(stat_list)
 
 #Function to get timings
 def execution_time():
@@ -100,7 +101,7 @@ def missing_data():
         df.iloc[:,idx].fillna(pd.to_numeric(df.iloc[:,idx],errors='coerce').mean(skipna=True),
                              inplace = True)   
 
-    return napercents
+    return str(napercents)
 
 
 #Function to check dependencies
@@ -113,13 +114,9 @@ def outdated_packages_list():
         the most recent available version;
     """
     
-    outdated = subprocess.check_output(['pip', 'list','--outdated'])
-    
-    #outdated_name = os.path.join(dataset_csv_path,"outdated.txt")
-    #with open(outdated_name, 'wb') as f:
-    #   f.write(outdated)
-
-    return outdated
+    outdated = subprocess.check_output(['pip', 'list','--outdated']).decode('utf-8')
+   
+    return str(outdated)
 
 if __name__ == '__main__':
 
