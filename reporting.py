@@ -40,7 +40,7 @@ def score_model():
     sns.set(font_scale=1.4)
     sns.heatmap(model_cm, annot=True, annot_kws={"size": 16})
     #plt.show()
-    save_figure_name = os.path.join(model_folder,"confusionmatrix.png")
+    save_figure_name = os.path.join(model_folder,"confusionmatrix2.png")
     plt.savefig(save_figure_name)
 
 
