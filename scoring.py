@@ -14,10 +14,11 @@ with open('config.json','r') as f:
 
 dataset_csv_path = os.path.join(config['output_folder_path']) 
 test_data_path = os.path.join(config['test_data_path']) 
-model_folder = os.path.join(config['output_model_path']) 
+#model_folder = os.path.join(config['output_model_path']) 
+model_folder = os.path.join(config['prod_deployment_path']) 
 
 #Function for model scoring
-def score_model():
+def score_model(new_data = False):
     """
     this function takes a trained model, 
     load test data, and calculate an F1 score for the model relative 
@@ -29,8 +30,14 @@ def score_model():
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
     
-    #read data
-    file_name = os.path.join(test_data_path,"testdata.csv")
+    #read data, if we are ingesting new data, then new data is used for scoring
+    if(new_data):
+        
+        file_name = os.path.join(dataset_csv_path,"finaldata.csv")
+    
+    else:
+        file_name = os.path.join(test_data_path,"testdata.csv")
+    
     df = pd.read_csv(file_name,low_memory=False)
 
     X = df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']].values.reshape(-1, 3)
