@@ -87,11 +87,12 @@ with open(os.path.join(prod_deployment_path, "latestscore.txt"), "r") as f:
     prev_score = float(f.read())
 
 #make new prediction using stored model and new ingested data
-new_score = scoring.score_model()
+new_score = scoring.score_model(new_data=True)
 
 #check model drift
 if new_score >= prev_score:
     print("no model drift detected with new data set")
+    print(f"new_score: {new_score}, old_score: {prev_score}")
     exit(0)
 else:
     #retrun the model
@@ -109,7 +110,6 @@ diagnostics.execution_time()
 diagnostics.missing_data()
 diagnostics.outdated_packages_list()
 reporting.score_model()
-
 
 
 
