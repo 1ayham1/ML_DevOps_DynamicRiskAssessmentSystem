@@ -40,10 +40,10 @@ def score_model():
 
     f1score = metrics.f1_score(predicted,y)
     
-    score_path = os.path.join(model_folder,"latestscore.txt")
+    return f1score
 
-    with open(score_path, 'w') as f:
-        f.write(str(f1score))
+    #score_path = os.path.join(model_folder,"latestscore.txt")
+    #with open(score_path, 'w') as f:
+    #    f.write(str(f1score))
 
-if __name__ == "__main__":
-    score_model()     
+
