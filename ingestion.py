@@ -41,13 +41,14 @@ def merge_multiple_dataframe():
     datasets = glob.glob(f'{r_path}/**/*.csv',recursive=True)
     df_list = pd.concat(map(pd.read_csv, datasets))
 
-    
     logger.info("clean data and write to outputfolder")
+    
     final_data = df_list.drop_duplicates()
     final_data.to_csv(os.path.join(output_folder_path,'finaldata.csv'), index=False)
 
-    #extract and save filenames as a reference. 
+    logger.info("extract and save consumed filenames")
     #FUTURE: consider also save the path and output to .json
+
     file_names = [os.path.basename(path) for path in datasets]
 
     with open(os.path.join(output_folder_path,'ingestedfiles.txt'),"w")  as f:
@@ -55,5 +56,7 @@ def merge_multiple_dataframe():
             f.write(element+ "\n")
         
 if __name__ == '__main__':
+
     merge_multiple_dataframe()
-    print("\nwelldone ...\ncheck relevent folders for output\n")
+    logger.info("welldone ...check relevent folders for output\n")
+    
