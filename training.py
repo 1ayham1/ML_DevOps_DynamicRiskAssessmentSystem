@@ -1,13 +1,13 @@
-from flask import Flask, session, jsonify, request
+"""Data Split and Training"""
+
 import pandas as pd
-import numpy as np
 import pickle
 import os
+import json
+import logging
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-import json
-import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 logger = logging.getLogger()
@@ -21,7 +21,7 @@ model_path = os.path.join(config['output_model_path'])
 test_data_path = os.path.join(config['test_data_path']) 
 
 def data_load(folder_path, file_name):
-    """load data from destination folder
+    """loads data from destination folder
     
     data_file    : name of the file containing required data
     folder_path  : folder where data resides
@@ -36,14 +36,15 @@ def data_load(folder_path, file_name):
     df = pd.read_csv(file_name,low_memory=False)
 
     logger.info("extracting features: X and target: y")
-    X = df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']].values.reshape(-1, 3)
-    y = df['exited'].values.reshape(-1, 1).ravel()
+    
+    X = df.copy().drop(["corporation"], axis=1)
+    X = X.values.reshape(-1,len(df.columns)-2)  
+    y = X.pop("exited")
+    y = y.values.reshape(-1,1).ravel()
 
     #Alternative extraction:
-    #X = df.copy().drop(["corporation"], axis=1)
-    #X = X.values.reshape(-1,len(df.columns)-2)  
-    #y = X.pop("exited")
-    #y = y.values.reshape(-1,1).ravel()
+    #X = df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']].values.reshape(-1, 3)
+    #y = df['exited'].values.reshape(-1, 1).ravel()
 
     return df, X, y
 
