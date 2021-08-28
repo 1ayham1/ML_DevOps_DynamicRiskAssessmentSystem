@@ -9,6 +9,7 @@ import subprocess
 import logging
 
 from training import data_load
+from collections import defaultdict
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
@@ -70,25 +71,33 @@ def execution_time():
     calculate timing of training.py and ingestion.py
     returns a list of 2 timing values in seconds
     """
-    #turn into a decorator later
-
-    def ingestion_timing():
-        starttime = timeit.default_timer()
-        os.system('python ingestion.py')
-        timing=timeit.default_timer() - starttime
-        return timing
-
-    def training_timing():
-        starttime = timeit.default_timer()
-        os.system('python training.py')
-        timing=timeit.default_timer() - starttime
-        return timing
     
-    ingestion_time = ingestion_timing()
-    training_time = training_timing()
+    fnc_ref_names = ['ingestion', 'training']
 
-    return [ingestion_time, training_time]
+    function_timings =  defaultdict(list)
+    iterations = 3
 
+    logger.info(f"Execution time for ingestion and traing in {iterations} iteration")
+
+    for _ in range(iterations): 
+        for fnc_name in fnc_ref_names:
+
+            starttime = timeit.default_timer()
+            os.system(f"python {fnc_name}.py")
+            timing=timeit.default_timer() - starttime
+
+            logger.info(fnc_name)
+            
+            function_timings[fnc_name].append(timing)
+
+
+    logger.info("Calculating the average execution time")
+
+    avg_ingest_time = sum(function_timings['ingestion'])/len(function_timings['ingestion'])
+    avg_train_time = sum(function_timings['training'])/len(function_timings['training'])
+
+    return [avg_ingest_time, avg_train_time]
+    
 
 def missing_data():
     """
@@ -127,13 +136,13 @@ def outdated_packages_list():
 if __name__ == '__main__':
 
     
-    predicted = model_predictions()
-    logger.info(f"predicted outcome: {predicted}")
-
-    summary_list = dataframe_summary()
-    
+    #predicted = model_predictions()
+    #summary_list = dataframe_summary()
+    #t_ing, t_train = execution_time()
     #p_missing = missing_data()
-    #t_inj, t_train = execution_time()
+    
+   
+    
     #outdated = outdated_packages_list()
     
     logger.info(f"Done performing necessary diagnostics ..."
