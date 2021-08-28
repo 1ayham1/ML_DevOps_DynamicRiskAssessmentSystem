@@ -65,17 +65,18 @@ def dataframe_summary():
     return data_summary
 
 
-#Function to get timings
 def execution_time():
-    """
+    """function execution time calcuation:
+
     calculate timing of training.py and ingestion.py
-    returns a list of 2 timing values in seconds
+    returns a list of the average execution time in seconds after
+    running the functions for N iterations
     """
     
     fnc_ref_names = ['ingestion', 'training']
 
     function_timings =  defaultdict(list)
-    iterations = 3
+    iterations = 10
 
     logger.info(f"Execution time for ingestion and traing in {iterations} iteration")
 
@@ -86,7 +87,7 @@ def execution_time():
             os.system(f"python {fnc_name}.py")
             timing=timeit.default_timer() - starttime
 
-            logger.info(fnc_name)
+            logger.info(f"claculating timing for: {fnc_name} function")
             
             function_timings[fnc_name].append(timing)
 
@@ -100,26 +101,31 @@ def execution_time():
     
 
 def missing_data():
-    """
-    count the number of NA values in each column and thier percentage
-    """
-    injested_name = os.path.join(dataset_csv_path,"finaldata.csv")
-    df = pd.read_csv(injested_name,low_memory=False)
+    """count NA in each column and thier percentage"""
+   
+    file_name = "data_train.csv"
+    df_data, _, _ = data_load(dataset_csv_path, file_name)
 
-    nas=list(df.isna().sum())
-    napercents=[nas[i]/len(df.index) for i in range(len(nas))]
+    logger.info(f"calculating percentage of NA")
 
-    #extract columns that need to be imputed
+    missing_values_df = df_data.isna().sum() / df_data.shape[0]
+    napercents = missing_values_df.values.tolist()
+
+    
+    #[Additional]: extract columns that need to be imputed
+    nas=list(df_data.isna().sum())
     imp_col_idx = [ix for ix, elem in enumerate(nas) if elem !=0]
 
     for idx in imp_col_idx:
-        df.iloc[:,idx].fillna(pd.to_numeric(df.iloc[:,idx],errors='coerce').mean(skipna=True),
-                             inplace = True)   
+        df_data.iloc[:,idx].fillna(
+                pd.to_numeric(df_data.iloc[:,idx],errors='coerce').mean(skipna=True),
+                inplace = True)   
+
 
     return str(napercents)
 
 
-#Function to check dependencies
+
 def outdated_packages_list():
     """get a list of outdated packated
     
@@ -135,15 +141,11 @@ def outdated_packages_list():
 
 if __name__ == '__main__':
 
-    
-    #predicted = model_predictions()
-    #summary_list = dataframe_summary()
-    #t_ing, t_train = execution_time()
-    #p_missing = missing_data()
-    
-   
-    
-    #outdated = outdated_packages_list()
+    predicted = model_predictions()
+    summary_list = dataframe_summary()
+    t_ing, t_train = execution_time()
+    p_missing = missing_data()
+    outdated = outdated_packages_list()
     
     logger.info(f"Done performing necessary diagnostics ..."
                 f"check related output folder\n")
