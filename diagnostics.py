@@ -37,6 +37,7 @@ def model_predictions():
         model = pickle.load(file)
 
     logger.info("Extracting data for prediction")
+
     file_name = "testdata.csv"
     _, X_features, _ = data_load(test_data_path, file_name)
 
@@ -44,30 +45,37 @@ def model_predictions():
 
     return predicted
 
-#Function to get summary statistics
-def dataframe_summary():
-    """
-    calculate summary statistics here
-    return a list containing all summary statistics
-    [mean, median, std for each numeric column]
-    """
-    injested_name = os.path.join(dataset_csv_path,"finaldata.csv")
-    df = pd.read_csv(injested_name,low_memory=False)
 
-    numeric_data = df.drop('exited',axis=1)
+def dataframe_summary():
+    """get summary statistics
+
+    calculate [mean,median, std] for numeric columns in the data set
+    and return a list containing all summary statistics
+    """
+
+    file_name = "finaldata.csv"
+    df_data, _, _ = data_load(dataset_csv_path, file_name)
+
+    numeric_data = df_data.drop(['corporation','exited'],axis=1)
     #numeric_data = df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']]
     
-    group_mean = df.mean()
-    group_std = df.std()
-    group_median = df.median()
+    logger.info("performing summary statistics")
+
+    data_summary = numeric_data.agg(['mean','median','std'])
+    print(data_summary)
+
+    #group_mean = df.mean()
+    #group_std = df.std()
+    #group_median = df.median()
 
     #the required output is vage ==> it will be mean, median, std for every class
-    stat_list = []
+    #stat_list = []
 
-    for idx in range(len(group_mean)):
-        stat_list.extend([group_mean[idx],group_median[idx],group_std[idx]])
-    
-    return str(stat_list)
+    #for idx in range(len(group_mean)):
+    #    stat_list.extend([group_mean[idx],group_median[idx],group_std[idx]])
+    l = 1
+    return l
+
 
 #Function to get timings
 def execution_time():
@@ -131,17 +139,17 @@ def outdated_packages_list():
 
 if __name__ == '__main__':
 
-    #read data
-    file_name = os.path.join(test_data_path,"testdata.csv")
-    df = pd.read_csv(file_name,low_memory=False)
+    
+    predicted = model_predictions()
+    logger.info(f"predicted outcome: {predicted}")
 
-    predicted = model_predictions(df)
-    #print(predicted)
-    out_list = dataframe_summary()
-    p_missing = missing_data()
-    t_inj, t_train = execution_time()
-    outdated = outdated_packages_list()
-    logger.info(f"Done performing necessary diagnostics ...",
+    summary_list = dataframe_summary()
+    
+    #p_missing = missing_data()
+    #t_inj, t_train = execution_time()
+    #outdated = outdated_packages_list()
+    
+    logger.info(f"Done performing necessary diagnostics ..."
                 f"check related output folder\n")
 
 
