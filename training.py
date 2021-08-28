@@ -20,9 +20,18 @@ dataset_csv_path = os.path.join(config['output_folder_path'])
 model_path = os.path.join(config['output_model_path']) 
 
 
-def data_load():
-    """load data from destination folder and return a df"""
+def data_load(folder_path, file_name):
+    """load data from destination folder
+    
+    data_file    : name of the file containing required data
+    folder_path  : folder where data resides
+    
+    return pandas data frame containing data
+    """
+    file_name = os.path.join(folder_path,file_name)
+    df = pd.read_csv(file_name,low_memory=False)
 
+    return df
 
 
 def data_split(df):
@@ -40,8 +49,11 @@ def train_model():
                     warm_start=False)
     
     #read data
-    file_name = os.path.join(dataset_csv_path,"finaldata.csv")
-    df = pd.read_csv(file_name,low_memory=False)
+
+    file_name = "finaldata.csv"
+    logger.info(f"Loading {file_name} data from {dataset_csv_path}")
+
+    df = data_load(dataset_csv_path,file_name)
     
     #fit the logistic regression to your data
     
