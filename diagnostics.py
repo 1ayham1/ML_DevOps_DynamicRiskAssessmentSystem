@@ -55,26 +55,13 @@ def dataframe_summary():
 
     file_name = "finaldata.csv"
     df_data, _, _ = data_load(dataset_csv_path, file_name)
-
     numeric_data = df_data.drop(['corporation','exited'],axis=1)
-    #numeric_data = df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']]
     
     logger.info("performing summary statistics")
 
     data_summary = numeric_data.agg(['mean','median','std'])
-    print(data_summary)
 
-    #group_mean = df.mean()
-    #group_std = df.std()
-    #group_median = df.median()
-
-    #the required output is vage ==> it will be mean, median, std for every class
-    #stat_list = []
-
-    #for idx in range(len(group_mean)):
-    #    stat_list.extend([group_mean[idx],group_median[idx],group_std[idx]])
-    l = 1
-    return l
+    return data_summary
 
 
 #Function to get timings
