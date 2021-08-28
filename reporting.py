@@ -1,46 +1,55 @@
-import pickle
-from sklearn.model_selection import train_test_split
-import pandas as pd
-import numpy as np
-from sklearn import metrics
-import matplotlib.pyplot as plt
-import seaborn as sns
+
+
+"""Scoring deployed model"""
+
 import json
 import os
+import logging
 
-from diagnostics import model_predictions
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 from sklearn.metrics import confusion_matrix
+from diagnostics import model_predictions
+from training import data_load
 
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
+logger = logging.getLogger()
 
-#Load config.json and get path variables
-with open('config.json','r') as f:
-    config = json.load(f) 
+# Load config.json and get path variables
+with open('config.json', 'r') as f:
+    config = json.load(f)
 
-dataset_csv_path = os.path.join(config['output_folder_path']) 
-test_data_path = os.path.join(config['test_data_path']) 
+dataset_csv_path = os.path.join(config['output_folder_path'])
+test_data_path = os.path.join(config['test_data_path'])
 model_folder = os.path.join(config['output_model_path'])
 
-#Function for reporting
-def score_model():
-    """
-    calculate a confusion matrix using the test data and the deployed model
+
+def score_model(ref_num=''):
+    """score the model
+
+    calculate a confusion matrix using the test data and
+    the deployed model.
     write the confusion matrix to the workspace
     """
 
-    file_name = os.path.join(test_data_path,"testdata.csv")
-    report_df = pd.read_csv(file_name,low_memory=False)
+    file_name = "data_test.csv"  # "testdata.csv"
+    _, _, actual_values = data_load(test_data_path, file_name)
 
-    predicted = model_predictions(report_df)
-    actual_values =  report_df['exited'].values.reshape(-1, 1).ravel()
+    logger.info("scoring a deployed model")
 
-    model_cm = confusion_matrix(actual_values, predicted)
-    
-    #https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
+    predicted_responses = model_predictions(test_data_path, file_name)
+
+    model_cm = confusion_matrix(actual_values, predicted_responses)
+
+    logger.info("saving confusion matrix plot")
+    # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
     sns.set(font_scale=1.4)
     sns.heatmap(model_cm, annot=True, annot_kws={"size": 16})
-    #plt.show()
-    save_figure_name = os.path.join(model_folder,"confusionmatrix2.png")
+
+    save_figure_name = os.path.join(
+        model_folder, f"confusionmatrix{ref_num}.png")
     plt.savefig(save_figure_name)
 
 
