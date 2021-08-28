@@ -1,0 +1,66 @@
+[0 1 1 1 1]
+0.6666666666666666
+        lastmonth_activity  lastyear_activity  number_of_employees
+mean            165.653846        1502.923077            26.884615
+median           73.000000         955.000000            14.000000
+std             284.033229        2192.644958            31.353886
+Missing Data:
+[0.0, 0.0, 0.0, 0.0, 0.0]
+Time:
+Ingestion: 0.86035094	Train: 2.3627883900000004
+Outdated Packages:
+Package            Version             Latest  Type
+------------------ ------------------- ------- -----
+astroid            2.6.2               2.7.2   wheel
+atpublic           1.0                 2.3     sdist
+bleach             4.0.0               4.1.0   wheel
+chardet            3.0.4               4.0.0   wheel
+click              7.1.2               8.0.1   wheel
+cryptography       3.1.1               3.4.8   wheel
+distro             1.5.0               1.6.0   wheel
+dulwich            0.20.24             0.20.25 wheel
+dvc                2.5.4               2.6.4   wheel
+fastapi            0.68.0              0.68.1  wheel
+Flask              1.1.2               2.0.1   wheel
+flufl.lock         3.2                 6.0     sdist
+grandalf           0.6                 0.7     wheel
+idna               2.10                3.2     wheel
+importlib-metadata 4.6.4               4.7.1   wheel
+ipython            7.26.0              7.27.0  wheel
+isort              5.9.2               5.9.3   wheel
+itsdangerous       1.1.0               2.0.1   wheel
+json5              0.9.5               0.9.6   wheel
+jupyter-client     6.1.12              7.0.1   wheel
+jupyterlab         3.1.7               3.1.9   wheel
+jupyterlab-server  2.7.1               2.7.2   wheel
+kiwisolver         1.3.1               1.3.2   wheel
+llvmlite           0.36.0              0.37.0  wheel
+numba              0.53.1              0.54.0  wheel
+numpy              1.21.0              1.21.2  wheel
+pdftotext          2.1.6               2.2.0   sdist
+phonenumbers       8.12.30             8.12.31 wheel
+pip                21.1.3              21.2.4  wheel
+plotly             5.1.0               5.2.2   wheel
+prompt-toolkit     3.0.19              3.0.20  wheel
+pydot              1.2.4               1.4.2   wheel
+pylint             2.9.3               2.10.2  wheel
+pyOpenSSL          19.1.0              20.0.1  wheel
+PyQt5              5.12.3              5.15.4  wheel
+PyQt5-sip          4.19.18             12.9.0  wheel
+PyQtChart          5.12                5.15.4  wheel
+PyQtWebEngine      5.12.1              5.15.4  wheel
+requests           2.24.0              2.26.0  wheel
+rich               10.7.0              10.8.0  wheel
+ruamel.yaml        0.17.10             0.17.15 wheel
+ruamel.yaml.clib   0.2.2               0.2.6   wheel
+seaborn            0.11.1              0.11.2  wheel
+setuptools         52.0.0.post20210125 57.4.0  wheel
+shtab              1.3.10              1.4.0   wheel
+smmap              3.0.5               4.0.0   wheel
+starlette          0.14.2              0.16.0  wheel
+terminado          0.10.1              0.11.1  wheel
+tqdm               4.62.1              4.62.2  wheel
+urllib3            1.25.11             1.26.6  wheel
+websocket-client   0.57.0              1.2.1   wheel
+Werkzeug           1.0.1               2.0.1   wheel
+wheel              0.36.2              0.37.0  wheel
