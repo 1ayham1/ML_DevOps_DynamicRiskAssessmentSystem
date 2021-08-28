@@ -25,7 +25,7 @@ test_data_path = os.path.join(config['test_data_path'])
 deploy_folder = os.path.join(config['prod_deployment_path'])
 
 
-def model_predictions():
+def model_predictions(folder = test_data_path, file_name='testdata.csv'):
     """perform prediction on deployed model
 
     read the deployed model and a test dataset, run the model
@@ -40,23 +40,23 @@ def model_predictions():
 
     logger.info("Extracting data for prediction")
 
-    file_name = "testdata.csv"
-    _, X_features, _ = data_load(test_data_path, file_name)
+    
+    _, X_features, _ = data_load(folder, file_name)
 
     predicted_response = model.predict(X_features)
 
     return predicted_response
 
 
-def dataframe_summary():
+def dataframe_summary(folder = dataset_csv_path, file_name="finaldata.csv"):
     """get summary statistics
 
     calculate [mean,median, std] for numeric columns in the data set
     and return a list containing all summary statistics
     """
 
-    file_name = "finaldata.csv"
-    df_data, _, _ = data_load(dataset_csv_path, file_name)
+     
+    df_data, _, _ = data_load(folder, file_name)
     numeric_data = df_data.drop(['corporation', 'exited'], axis=1)
 
     logger.info("performing summary statistics")
@@ -144,7 +144,9 @@ def outdated_packages_list():
 if __name__ == '__main__':
 
     predicted_tst = model_predictions()
+    print(predicted_tst)
     summary_list = dataframe_summary()
+    print(summary_list)
     t_ing, t_train = execution_time()
     p_missing = missing_data()
     outdated_dep = outdated_packages_list()
