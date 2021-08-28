@@ -1,12 +1,18 @@
+"""Performing Daignostic common tests"""
 
 import pandas as pd
-import numpy as np
 import timeit
 import os
 import json
 import pickle
 import subprocess
+import logging
 
+from training import data_load
+
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
+logger = logging.getLogger()
 
 #Load config.json and get environment variables
 with open('config.json','r') as f:
@@ -16,20 +22,25 @@ dataset_csv_path = os.path.join(config['output_folder_path'])
 test_data_path = os.path.join(config['test_data_path']) 
 deploy_folder = os.path.join(config['prod_deployment_path'])
 
-#Function to get model predictions
-def model_predictions(df):
-    """
-    read the deployed model and a test dataset, calculate predictions
+
+def model_predictions():
+    """perform prediction on deployed model
+
+    read the deployed model and a test dataset, run the model
     and returns a list containing all predictions
     """
+
+    logger.info("loading deployed model")
+
     model_path = os.path.join(deploy_folder,"trainedmodel.pkl")
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
 
-    X = df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']].values.reshape(-1, 3)
-    y = df['exited'].values.reshape(-1, 1).ravel()
+    logger.info("Extracting data for prediction")
+    file_name = "testdata.csv"
+    _, X_features, _ = data_load(test_data_path, file_name)
 
-    predicted = model.predict(X)
+    predicted = model.predict(X_features)
 
     return predicted
 
@@ -130,6 +141,8 @@ if __name__ == '__main__':
     p_missing = missing_data()
     t_inj, t_train = execution_time()
     outdated = outdated_packages_list()
+    logger.info(f"Done performing necessary diagnostics ...",
+                f"check related output folder\n")
 
 
 
