@@ -7,6 +7,10 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 import json
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
+logger = logging.getLogger()
 
 #Load config.json and get path variables
 with open('config.json','r') as f:
@@ -15,9 +19,19 @@ with open('config.json','r') as f:
 dataset_csv_path = os.path.join(config['output_folder_path']) 
 model_path = os.path.join(config['output_model_path']) 
 
-#Function for training the model
+
+def data_load():
+    """load data from destination folder and return a df"""
+
+
+
+def data_split(df):
+    """split data into train/test"""
+
+
 def train_model():
-    
+    """Function for training the model"""
+
     #use this logistic regression for training
     logit = LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
                     intercept_scaling=1, l1_ratio=None, max_iter=100,
