@@ -46,11 +46,14 @@ def score_model(new_data = False):
     predicted = model.predict(X)
 
     f1score = metrics.f1_score(predicted,y)
+
+    #writing score
+    score_path = os.path.join(model_folder,"latestscore.txt")
+    with open(score_path, 'w') as f:
+        f.write(str(f1score))
     
     return f1score
 
-    #score_path = os.path.join(model_folder,"latestscore.txt")
-    #with open(score_path, 'w') as f:
-    #    f.write(str(f1score))
+
 
 
