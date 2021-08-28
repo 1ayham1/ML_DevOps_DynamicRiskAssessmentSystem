@@ -1,28 +1,40 @@
+"""Calling API Endpoints and reporting"""
 import requests
 import os
 import json
+import logging
 
-#Specify a URL that resolves to your workspace
+logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
+logger = logging.getLogger()
+
+# Specify a URL that resolves to workspace
 URL = "http://127.0.0.1/"
 
-#Call each API endpoint and store the responses
-call_1 = requests.post('http://127.0.0.1:8000/prediction?file_location=testdata/testdata.csv').text
-call_2 = requests.get('http://127.0.0.1:8000/scoring').text 
-call_3 = requests.get('http://127.0.0.1:8000/summarystats').text
-call_4 = requests.get('http://127.0.0.1:8000/diagnostics').text 
+logger.info("Calling each API endpoint and store the responses")
 
-#combine all API responses
-responses = call_1 + "\n" + call_2 + "\n" + call_3 + "\n" + call_4
+prediction_call = requests.post(
+    'http://127.0.0.1:8000/prediction?file_location=testdata/testdata.csv').text
+scoring_call = requests.get('http://127.0.0.1:8000/scoring').text
+stat_call = requests.get('http://127.0.0.1:8000/summarystats').text
+diag_call = requests.get('http://127.0.0.1:8000/diagnostics').text
 
-#write the responses to your workspace
+# combine all API responses
+responses = prediction_call + "\n" + scoring_call + \
+    "\n" + stat_call + "\n" + diag_call
 
-#Load config.json and get path variables
-with open('config.json','r') as f:
-    config = json.load(f) 
+
+# Load config.json and get path variables
+with open('config.json', 'r') as f:
+    config = json.load(f)
 
 model_folder = os.path.join(config['output_model_path'])
-output_file = os.path.join(model_folder,"apireturns.txt")
+output_file = os.path.join(model_folder, "apireturns.txt")
+
+# [FIX Later] just to account for writing another file in case of model drift.
+if(os.path.isfile(output_file)):
+    output_file = os.path.join(model_folder, "apireturns2.txt")
+
+logger.info("write the responses to workspace")
 
 with open(output_file, 'w') as f:
-   f.write(responses)
-
+    f.write(responses)
