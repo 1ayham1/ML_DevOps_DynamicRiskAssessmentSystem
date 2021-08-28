@@ -1,87 +1,84 @@
+"""Process Automation"""
+
+import json
+import os
+import logging
+import glob
+
+import pandas as pd
+
 import training
 import scoring
 import deployment
 import diagnostics
 import reporting
+import ingestion
 
-import pandas as pd
 
-import json
-import os
+logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
+logger = logging.getLogger()
 
-#Check and read new data
+
 
 #Load config.json and get input and output paths
-with open('config.json','r') as f:
-    config = json.load(f) 
-
+with open('config.json','r') as in_file:
+    config = json.load(in_file) 
 
 input_folder_path = config['input_folder_path']
+output_folder_path = config['output_folder_path']
 model_folder = os.path.join(config['output_model_path']) 
 prod_deployment_path = os.path.join(config['prod_deployment_path'])
-output_folder_path = config['output_folder_path']
+
 
 """
-read ingestedfiles.txt
-If there are any files in the input_folder_path directory that are not listed 
-in ingestedfiles.txt, then the script runs the code in ingestion.py
-to ingest all the new data.
+read [ingestedfiles.txt] from where the model is deployed
+If there are any files in the [input_folder_path] directory 
+that are not listed in [ingestedfiles.txt], then the script
+runs the code in ingestion.py to ingest all the new data.
 """
+
 already_ingested_files = []
 ingested_files = os.path.join(prod_deployment_path,"ingestedfiles.txt")
 
+logger.info("Checking and reading already ingested files")
+
 with open(ingested_files,'r') as files:
     for file in files:
-        already_ingested_files.append(file)
+        already_ingested_files.append(file.strip())
 
-#get a list of all files to be processed
+#check files in current director if new files are found, the procede to process them
 r_path = os.path.join(os.getcwd(),input_folder_path)
-new_ingested_files = []
+current_data_files = glob.glob(f'{r_path}/**/*.csv', recursive=True)
 
-col_names = ['corporation','lastmonth_activity','lastyear_activity',
-            'number_of_employees','exited']
+#keep only file names
+current_file_names = [os.path.basename(file) for file in current_data_files]
 
-df_list = pd.DataFrame(columns=col_names)
-all_files_ingested = True
+#subtract longer list from smaller one, so no elements are ignored
+if(len(current_file_names)>=len(already_ingested_files)):
+    missing_files = list(set(current_file_names).difference(already_ingested_files))
+else:
+    missing_files = list(set(already_ingested_files).difference(current_file_names))
 
-for roots, dirs, files in os.walk(r_path):
-    for file in files:
-        if file not in already_ingested_files:
-            
-            all_files_ingested = False
-            
-            new_ingested_files.append(file)
-
-            fullpath = os.path.join(roots, file)
-
-            df = pd.read_csv(fullpath)
-            df_list = df_list.append(df)
-
-
-
-#Deciding whether to proceed, part 1
-if(all_files_ingested):
-    print("all files are already ingested, no need to train a new model")
-    exit(0)
+if missing_files:
+    
+    logger.info(f"the following new files seems to be added:\n{missing_files}")
+    logger.info("Checking and reading new data from input_folder")
+    
+    #content will be written to output_folder as ingestedfiles.txt
+    ingestion.merge_multiple_dataframe()
 
 else:
-    result = df_list.drop_duplicates()
-    
-    #you can of course decide to merge the old consume files and df
-    data_file = os.path.join(output_folder_path,'finaldata.csv')
-    result.to_csv(data_file, index=False)
-    
-    names_file = os.path.join(output_folder_path,'ingestedfiles.txt')
-    with open(names_file,"w")  as f:
-        for element in new_ingested_files:
-            f.write(element+ "\n")
+    logger.info("\n\nNo new files were detected. Exiting...")
+    exit(0)
 
+
+logger.info("Checking for model drift")
 
 """
-Checking for model drift
 check whether the score from the deployed model is different from the
 score from the model that uses the newest ingested data
 """
+
 #read old score from deployment direcotry
 with open(os.path.join(prod_deployment_path, "latestscore.txt"), "r") as f:
     prev_score = float(f.read())
@@ -91,25 +88,43 @@ new_score = scoring.score_model(new_data=True)
 
 #check model drift
 if new_score >= prev_score:
-    print("no model drift detected with new data set")
-    print(f"new_score: {new_score}, old_score: {prev_score}")
+    logger.info("no model drift detected with new data set")
+    logger.info(f"new_score: {new_score}, old_score: {prev_score}")
+    
     exit(0)
 else:
-    #retrun the model
+    logger.info(f"new_score: {new_score}, old_score: {prev_score}")
+    logger.info("WARNING: ......Model Drift is detected.")
+    logger.info("WARNING: ......Retraining:")
+
     training.train_model()
 
-#Re-deployment re-run the deployment.py script
+
+logger.info("Re-deployment re-run the deployment.py script")
+
 deployment.store_model_into_pickle()
 
-#Diagnostics and reporting
-#run diagnostics.py and reporting.py for the re-deployed model
 
-diagnostics.model_predictions(new_ingested_files)
+logger.info("Diagnostics and reporting on the re-deployed model")
+
+#new data is already split using ingestion.py and outputed to output_folder
+#This Data flow model is leaky, and will be enhanced in the future
+
+folder = 'output_folder_path'
+file_name = 'data_train.csv'
+
+diagnostics.model_predictions(folder,file_name)
 diagnostics.dataframe_summary()
 diagnostics.execution_time()
 diagnostics.missing_data()
 diagnostics.outdated_packages_list()
-reporting.score_model()
+
+"""
+add a refernce number to the saved file. so it does not override previous 
+plot. Equivelent to defining class static variable incremented everytime the 
+function is called
+"""
+reporting.score_model(ref_num='2')
 
 
 
