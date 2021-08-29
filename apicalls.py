@@ -13,14 +13,20 @@ URL = "http://127.0.0.1/"
 logger.info("Calling each API endpoint and store the responses")
 
 prediction_call = requests.post(
-    'http://127.0.0.1:8000/prediction?file_location=testdata/testdata.csv').text
+    'http://127.0.0.1:8000/prediction?file_location=testdata/data_test.csv').text
 scoring_call = requests.get('http://127.0.0.1:8000/scoring').text
 stat_call = requests.get('http://127.0.0.1:8000/summarystats').text
 diag_call = requests.get('http://127.0.0.1:8000/diagnostics').text
 
 # combine all API responses
-responses = prediction_call + "\n" + scoring_call + \
-    "\n" + stat_call + "\n" + diag_call
+responses = (
+    f"Perdiction Output:\n {prediction_call}\n"
+    f"Score:\n  {scoring_call}\n"
+    f"Summary Stat:\n {stat_call}\n"
+    f"Diagnostic:\n {diag_call}")
+                
+                
+                
 
 
 # Load config.json and get path variables

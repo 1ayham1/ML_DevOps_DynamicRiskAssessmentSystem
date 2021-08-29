@@ -54,6 +54,7 @@ def merge_multiple_dataframe():
 
     file_names = [os.path.basename(path) for path in datasets]
 
+
     with open(os.path.join(output_folder_path, 'ingestedfiles.txt'), "w") as f:
         for element in file_names:
             f.write(element + "\n")

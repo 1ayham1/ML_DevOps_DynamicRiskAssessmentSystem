@@ -85,7 +85,7 @@ with open(os.path.join(prod_deployment_path, "latestscore.txt"), "r") as f:
     prev_score = float(f.read())
 
 # make new prediction using stored model and new ingested data
-new_score = scoring.score_model(new_data=True)
+new_score = scoring.score_model(new_data=False)
 
 # check model drift
 if new_score >= prev_score:
@@ -111,7 +111,7 @@ logger.info("Diagnostics and reporting on the re-deployed model")
 # new data is already split using ingestion.py and outputed to output_folder
 # This Data flow model is leaky, and will be enhanced in the future
 
-folder_name = 'output_folder_path'
+folder_name = os.path.join(config['output_folder_path'])
 file_name = 'data_train.csv'
 
 diagnostics.model_predictions(folder_name, file_name)

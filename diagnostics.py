@@ -77,7 +77,7 @@ def execution_time():
     fnc_ref_names = ['ingestion', 'training']
 
     function_timings = defaultdict(list)
-    iterations = 10
+    iterations = 3
 
     logger.info(
         f"Execution time for ingestion and traing in {iterations} iteration")

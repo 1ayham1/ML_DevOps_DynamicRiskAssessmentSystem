@@ -51,7 +51,7 @@ logger.info("Scoring Endpoint")
 def score_stats():
     """check the score of the deployed model, returns F1 score"""
 
-    f1_score_ = scoring.score_model()
+    f1_score_ = scoring.score_model(new_data=True)
     return str(f1_score_)
 
 

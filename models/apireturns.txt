@@ -1,10 +1,17 @@
-[0 1 1 1 1]
-0.5714285714285715
-[5625.923076923077, 425.0, 19444.774621317832, 763.5384615384615, 97.5, 2016.6093569309696, 457.46153846153845, 99.0, 800.6048328991891, 0.5, 0.5, 0.5099019513592785]
-Missing Data:
+Perdiction Output:
+ [0 1 1]
+Score:
+  0.7500000000000001
+Summary Stat:
+         lastmonth_activity  lastyear_activity  number_of_employees
+mean           5625.923077         763.538462           457.461538
+median          425.000000          97.500000            99.000000
+std           19444.774621        2016.609357           800.604833
+Diagnostic:
+ Missing Data:
 [0.0, 0.0, 0.0, 0.0, 0.0]
 Time:
-Ingestion: 0.8284358000000225	Train: 3.080007499999965
+Ingestion: 0.9112773666666669	Train: 2.506536533333333
 Outdated Packages:
 Package            Version             Latest  Type
 ------------------ ------------------- ------- -----
@@ -22,7 +29,8 @@ Flask              1.1.2               2.0.1   wheel
 flufl.lock         3.2                 6.0     sdist
 grandalf           0.6                 0.7     wheel
 idna               2.10                3.2     wheel
-importlib-metadata 4.6.4               4.7.1   wheel
+importlib-metadata 4.6.4               4.8.0   wheel
+ipython            7.26.0              7.27.0  wheel
 isort              5.9.2               5.9.3   wheel
 itsdangerous       1.1.0               2.0.1   wheel
 json5              0.9.5               0.9.6   wheel
@@ -46,7 +54,8 @@ PyQt5-sip          4.19.18             12.9.0  wheel
 PyQtChart          5.12                5.15.4  wheel
 PyQtWebEngine      5.12.1              5.15.4  wheel
 requests           2.24.0              2.26.0  wheel
-ruamel.yaml        0.17.10             0.17.14 wheel
+rich               10.7.0              10.8.0  wheel
+ruamel.yaml        0.17.10             0.17.15 wheel
 ruamel.yaml.clib   0.2.2               0.2.6   wheel
 seaborn            0.11.1              0.11.2  wheel
 setuptools         52.0.0.post20210125 57.4.0  wheel

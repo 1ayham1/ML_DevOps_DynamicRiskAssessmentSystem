@@ -18,7 +18,7 @@ with open('config.json', 'r') as f:
 
 dataset_csv_path = os.path.join(config['output_folder_path'])
 test_data_path = os.path.join(config['test_data_path'])
-model_folder = os.path.join(config['prod_deployment_path'])
+model_folder = os.path.join(config['output_model_path'])
 
 
 def score_model(new_data=False):
